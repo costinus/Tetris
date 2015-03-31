@@ -8,8 +8,6 @@ public class Square extends Figure {
 
     private ArrayList<Point> array;//coords
 
-    public Color color = new Color(Figure.COLOR_MAX, Figure.COLOR_MAX, Figure.COLOR_MIN);
-
     public Square()
     {
         array = new ArrayList<Point>(4);

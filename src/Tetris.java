@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
+import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -28,6 +29,7 @@ public class Tetris extends JFrame{
 
     Controller control;
     //static JFrame frame;
+    static DrawTetris drawTetris;
     static Field field;
     static Figure figure;
 
@@ -140,8 +142,13 @@ public class Tetris extends JFrame{
             e.printStackTrace();
         }
 
-        field = new Field(this);
-        add(field);
+        //field = new Field(this);
+        //add(field);
+
+        field = new Field();
+
+        drawTetris = new DrawTetris(this);
+        add(drawTetris);
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -154,6 +161,7 @@ public class Tetris extends JFrame{
         isNewGame = true;
         gameSpeed = 1.0f;
 
+
         logictimer = new Clock(gameSpeed);
         logictimer.setPaused(true);
 
@@ -165,6 +173,7 @@ public class Tetris extends JFrame{
 
             if (logictimer.hasElapsedCycle()){
                 update();
+                drawTetris.addForDraw(field, figure);
             }
 
             render();
@@ -195,6 +204,7 @@ public class Tetris extends JFrame{
         logictimer.reset();
         logictimer.setCyclesPerSecond(gameSpeed);
         createFig();
+        drawTetris.addForDraw(field, figure);
     }
 
     public void update(){
@@ -206,15 +216,20 @@ public class Tetris extends JFrame{
         else{
             field.addFigToField(coords);
             //check for filling lines and if it is then remove those lines
-            field.removeLine(coords);
+
+            int numOfDelLines = field.removeLine(coords);
+            if(numOfDelLines > 0){
+                score += 100*numOfDelLines;
+            }
 
             gameSpeed += 0.035f;
+            level = (int)(gameSpeed * 1.70f);
             logictimer.setCyclesPerSecond(gameSpeed);
             logictimer.reset();
 
             createFig();
 
-            if (!field.checkForStop(coords)){
+            if (field.checkForEndGame(figure.getCoords())){
                 isEndGame = true;
                 return;
             }
@@ -226,20 +241,17 @@ public class Tetris extends JFrame{
         Random random = new Random();
         type = random.nextInt(2);
         figure = new Figure(type);
-        if (!isNewGame){
-            add(figure);
-            isNewGame = true;
-        }
-
     }
 
     public void render()
     {
-        field.repaint();
-        if (figure != null){
+        /*if (figure != null){
             figure.repaint();
             //figure.paintComponent(getGraphics());
         }
+        field.repaint();*/
+        drawTetris.repaint();
+
     }
 
 

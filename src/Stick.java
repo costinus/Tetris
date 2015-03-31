@@ -8,8 +8,6 @@ import java.util.Random;
 public class Stick extends Figure {
     private ArrayList<Point> array;//coords
 
-    public Color color = new Color(Figure.COLOR_MIN, Figure.COLOR_MAX, Figure.COLOR_MAX);
-
     public Stick()
     {
         array = new ArrayList<Point>(4);
@@ -66,7 +64,7 @@ public class Stick extends Figure {
         int y = 0;
         if (array.get(0).getX() == array.get(1).getX())//if vertical then rotate to horizontal
         {
-            if (!(i == 0 || i == 1 || i == 7))
+            if (!(i == 0 || i == 1 || i == 9))
             {
                 for(Point p:array)
                 {
